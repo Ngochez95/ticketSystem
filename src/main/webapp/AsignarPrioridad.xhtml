@@ -1,0 +1,333 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:composition template="resources/layout.xhtml">
+        <ui:define name="titulo">
+            <h:head>
+                <title>Asignar Prioridad</title>
+            </h:head>
+            <style>
+                body{
+                    background-color: #f2f2f2;
+                }
+            </style>
+        </ui:define>
+        <ui:define name="body">
+            <p:tabView rendered="#{manejadorLogin.GerenteGeneral()}">
+                <p:tab title="IT-Gerente">
+                    <h:form id="frmAsignarIG"  >
+
+                        <center>
+                            <p:dataTable id="solicitudesIG" var="solicitudIG" 
+                                         rows="10"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10, 15"
+                                         value="#{manejadorSolicitud.llenarFiltroManGerente()}" 
+                                         rowKey="#{solicitudIG}" selection="#{manejadorSolicitud.solicitudS}"
+                                         selectionMode="single"
+                                         style="
+                                         width: 70%;">
+                                <f:facet name="header" >
+                                    Mantenimientos Solicitados
+                                </f:facet>
+                                <p:column headerText="Codigo">
+                                    <h:outputText value="#{solicitudIG.NSeguimiento}" />
+                                </p:column>
+                                <p:column headerText="Titulo">
+                                    <h:outputText value="#{solicitudIG.titulo}" />
+                                </p:column>
+                                <p:column headerText="Departamento">
+                                    <h:outputText value="#{solicitudIG.idDirectorio.idDepartamento.nombre}" />
+                                </p:column>
+                                <p:column headerText="Categoria">
+                                    <h:outputText value="#{solicitudIG.idCategoria.nombre}" />
+                                </p:column>
+                            </p:dataTable> 
+
+                            <p:contextMenu for="solicitudesIG">
+                                <p:menuitem value="Asignar"  update="asignar" icon="ui-icon-pencil" oncomplete="PF('dialogo1').show()"/>
+                            </p:contextMenu>
+
+                            <p:dialog header="Asignaciones" widgetVar="dialogo1" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                                <p:outputPanel id="asignar" style="text-align:center;">
+                                    <p:panelGrid  columns="2" rendered="#{not empty manejadorSolicitud.solicitudS}" columnClasses="label,value">
+
+                                        <h:outputText value="Asignar Prioriodad: " />
+                                        <p:selectOneMenu id="cmbPrioridad" value="#{manejadorSolicitud.idPrioridad}">
+                                            <f:selectItems value="#{manejadorSolicitud.listaP}" var="valor" itemValue="#{valor.idPrioridad}" itemLabel="#{valor.nombre}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                        <h:outputText value="Asignar técnico " />
+                                        <p:selectOneMenu id="cmbTecnico" value="#{manejadorSolicitud.idDirectorio}">
+                                            <f:selectItems value="#{manejadorTecnico.listaTecIT}" var="valorT" itemValue="#{valorT.idDirectorio}" itemLabel="#{valorT.nombre1}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                    <p:commandButton value="asignar" id="btnAsignar" icon="ui-icon-check" actionListener="#{manejadorSolicitud.Actualizar(solicitudS)}"></p:commandButton>
+                                </p:outputPanel>
+                            </p:dialog>
+
+
+                        </center>
+                    </h:form>
+                </p:tab>
+                <p:tab title="Mantenimiento-Gerente">
+                    <h:form id="frmAsignarMG"  >
+
+                        <center>
+                            <p:dataTable id="solicitudesMG" var="solicitudMG" 
+                                         rows="10"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10, 15"
+                                         value="#{manejadorSolicitud.llenarFiltroITGerente()}" 
+                                         rowKey="#{solicitudMG}" selection="#{manejadorSolicitud.solicitudS}"
+                                         selectionMode="single"
+                                         style="
+                                         width: 70%;">
+                                <f:facet name="header" >
+                                    Mantenimientos Solicitados
+                                </f:facet>
+                                <p:column headerText="Codigo">
+                                    <h:outputText value="#{solicitudMG.NSeguimiento}" />
+                                </p:column>
+                                <p:column headerText="Titulo">
+                                    <h:outputText value="#{solicitudMG.titulo}" />
+                                </p:column>
+                                <p:column headerText="Departamento">
+                                    <h:outputText value="#{solicitudMG.idDirectorio.idDepartamento.nombre}" />
+                                </p:column>
+                                <p:column headerText="Categoria">
+                                    <h:outputText value="#{solicitudMG.idCategoria.nombre}" />
+                                </p:column>
+                            </p:dataTable>
+
+                            <p:contextMenu for="solicitudesMG">
+                                <p:menuitem value="Asignar"  update="asignar" icon="ui-icon-pencil" oncomplete="PF('dialogo').show()"/>
+                            </p:contextMenu>
+
+                            <p:dialog header="Asignaciones" widgetVar="dialogo" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                                <p:outputPanel id="asignar" style="text-align:center;">
+                                    <p:panelGrid  columns="2" rendered="#{not empty manejadorSolicitud.solicitudS}" columnClasses="label,value">
+
+                                        <h:outputText value="Asignar Prioriodad: " />
+                                        <p:selectOneMenu id="cmbPrioridad" value="#{manejadorSolicitud.idPrioridad}">
+                                            <f:selectItems value="#{manejadorSolicitud.listaP}" var="valor" itemValue="#{valor.idPrioridad}" itemLabel="#{valor.nombre}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                        <h:outputText value="Asignar técnico " />
+                                        <p:selectOneMenu id="cmbTecnico" value="#{manejadorSolicitud.idDirectorio}">
+                                            <f:selectItems value="#{manejadorTecnico.listaTecMA}" var="valorT" itemValue="#{valorT.idDirectorio}" itemLabel="#{valorT.nombre1}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                    <p:commandButton value="asignar" id="btnAsignar" icon="ui-icon-check" actionListener="#{manejadorSolicitud.Actualizar(solicitudS)}"></p:commandButton>
+                                </p:outputPanel>
+                            </p:dialog>
+
+                        </center>
+                    </h:form>
+                </p:tab>
+                <p:tab title="Ticket Asignados IT">
+                    <p:dataTable id="solicitudesMG" var="audIT" 
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10, 15"
+                                 value="#{manejadorSolicitud.llenarAudIT()}" 
+                                 
+                                 style="
+                                 width: 70%;">
+                        <f:facet name="header" >
+                            Mantenimientos Solicitados
+                        </f:facet>
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{audIT.nombre1}" />
+                        </p:column>
+                        <p:column headerText="Apellido">
+                            <h:outputText value="#{audIT.apellido1}" />
+                        </p:column>
+                        <p:column headerText="Departamento">
+                            <h:outputText value="#{audIT.idDepartamento.nombre}" />
+                        </p:column>
+                        <p:column headerText="Categoria">
+                            <h:outputText value="#{audIT.correo}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Ticket Asignados Infraestructura">
+
+                </p:tab>
+                <p:tab title="Mantenimientos pausados IT">
+
+                </p:tab>
+                <p:tab title="Mantenimientos pausados Infraestructura">
+
+                </p:tab>
+            </p:tabView>
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <p:tabView rendered="#{manejadorLogin.GerenteGeneralTabla()}">
+                <p:tab title="Mantenimientos">
+                    <h:form id="frmAsignar" rendered="#{manejadorLogin.GerenteGeneralTabla()}">
+
+                        <center>
+                            <p:dataTable id="solicitudes" var="solicitud" value="#{manejadorSolicitud.llenarFiltro()}" 
+                                         rowKey="#{solicitud}" selection="#{manejadorSolicitud.solicitudS}"
+                                         selectionMode="single"
+                                         rows="10"
+                                         style="
+                                         width: 70%;"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15">
+                                <f:facet name="header" >
+                                    Mantenimientos Solicitados
+                                </f:facet>
+                                <p:column headerText="Codigo">
+                                    <h:outputText value="#{solicitud.NSeguimiento}" />
+                                </p:column>
+                                <p:column headerText="Titulo">
+                                    <h:outputText value="#{solicitud.titulo}" />
+                                </p:column>
+                                <p:column headerText="Departamento">
+                                    <h:outputText value="#{solicitud.idDirectorio.idDepartamento.nombre}" />
+                                </p:column>
+                                <p:column headerText="Categoria">
+                                    <h:outputText value="#{solicitud.idCategoria.nombre}" />
+                                </p:column>
+                            </p:dataTable>
+
+                            <p:contextMenu for="solicitudes">
+                                <p:menuitem value="Asignar"  update="asignar" icon="ui-icon-pencil" oncomplete="PF('dialogo').show()"/>
+                            </p:contextMenu>
+
+                            <p:dialog header="Asignaciones" widgetVar="dialogo" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                                <p:outputPanel id="asignar" style="text-align:center;">
+                                    <p:panelGrid  columns="2" rendered="#{not empty manejadorSolicitud.solicitudS}" columnClasses="label,value">
+                                        <h:outputText value="Asignar Prioriodad: " />
+                                        <p:selectOneMenu id="cmbPrioridad" value="#{manejadorSolicitud.idPrioridad}">
+                                            <f:selectItems value="#{manejadorSolicitud.listaP}" var="valor" itemValue="#{valor.idPrioridad}" itemLabel="#{valor.nombre}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                        <h:outputText value="Asignar Técnico " />
+                                        <p:selectOneMenu id="cmbTecnico" value="#{manejadorSolicitud.idDirectorio}">
+                                            <f:selectItems value="#{manejadorTecnico.listaTec}" var="valorT" itemValue="#{valorT.idDirectorio}" itemLabel="#{valorT.nombre1}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                    <p:commandButton value="asignar" id="btnAsignar" icon="ui-icon-check" update="frmAsignar:solicitudes"
+                                                     actionListener="#{manejadorSolicitud.Actualizar(solicitudS)}">
+                                    </p:commandButton>
+                                </p:outputPanel>
+                            </p:dialog>
+                        </center>
+
+                    </h:form>
+                </p:tab>
+                <p:tab title="Tecnicos asignados">
+                    <p:dataTable id="idAud" var="aud" value="#{manejadorSolicitud.findxAud()}" 
+
+                                 rows="10"
+                                 style="
+                                 width: 70%;"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header" >
+                            Mantenimientos Solicitados
+                        </f:facet>
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{aud.nombre1}" />
+                        </p:column>
+                        <p:column headerText="Apellido">
+                            <h:outputText value="#{aud.apellido1}" />
+                        </p:column>
+                        <p:column headerText="Departamento">
+                            <h:outputText value="#{aud.idDepartamento.nombre}" />
+                        </p:column>
+                        <p:column headerText="Categoria">
+                            <h:outputText value="#{aud.correo}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Mantenimientos pausados">
+                    <h:form id="frmAsignarP" rendered="#{manejadorLogin.GerenteGeneralTabla()}">
+
+                        <center>
+                            <p:dataTable id="pausados" var="solicitud" value="#{manejadorSolicitud.llenarFiltroPAUSADOS()}" 
+                                         rowKey="#{solicitud}" selection="#{manejadorSolicitud.solicitudS}"
+                                         selectionMode="single"
+                                         rows="10"
+                                         style="
+                                         width: 70%;"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15">
+                                <f:facet name="header" >
+                                    Mantenimientos Pausados
+                                </f:facet>
+                                <p:column headerText="Codigo">
+                                    <h:outputText value="#{solicitud.NSeguimiento}" />
+                                </p:column>
+                                <p:column headerText="Titulo">
+                                    <h:outputText value="#{solicitud.titulo}" />
+                                </p:column>
+                                <p:column headerText="Departamento">
+                                    <h:outputText value="#{solicitud.idDirectorio.idDepartamento.nombre}" />
+                                </p:column>
+                                <p:column headerText="Categoria">
+                                    <h:outputText value="#{solicitud.idCategoria.nombre}" />
+                                </p:column>
+                            </p:dataTable>
+                            <p:contextMenu for="pausados">
+                                <p:menuitem value="Reabrir"  update="asignar" icon="ui-icon-pencil" oncomplete="PF('dialogo1').show()"/>
+                            </p:contextMenu>
+
+                            <p:dialog header="Asignaciones" widgetVar="dialogo1" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                                <p:outputPanel id="asignar" style="text-align:center;">
+                                    <p:panelGrid  columns="2" rendered="#{not empty manejadorSolicitud.solicitudS}" columnClasses="label,value">
+                                        <h:outputText value="Asignar Prioriodad: " />
+                                        <p:selectOneMenu id="cmbPrioridad" value="#{manejadorSolicitud.idPrioridad}">
+                                            <f:selectItems value="#{manejadorSolicitud.listaP}" var="valor" itemValue="#{valor.idPrioridad}" itemLabel="#{valor.nombre}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                        <h:outputText value="Asignar Técnico " />
+                                        <p:selectOneMenu id="cmbTecnico" value="#{manejadorSolicitud.idDirectorio}">
+                                            <f:selectItems value="#{manejadorTecnico.listaTec}" var="valorT" itemValue="#{valorT.idDirectorio}" itemLabel="#{valorT.nombre1}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                    <p:commandButton value="asignar" id="btnAsignar" icon="ui-icon-check" update="frmAsignarP:pausados"
+                                                     actionListener="#{manejadorSolicitud.Actualizar(solicitudS)}">
+                                    </p:commandButton>
+                                </p:outputPanel>
+                            </p:dialog>
+
+                            
+                        </center>
+
+                    </h:form>
+                </p:tab>
+            </p:tabView>
+            <f:metadata>
+                <f:viewAction action="#{manejadorLogin.loginJefe()}" />
+            </f:metadata>
+        </ui:define>
+    </ui:composition>
+</html>
+
